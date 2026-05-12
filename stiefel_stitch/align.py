@@ -158,9 +158,9 @@ def capture_activations(
             ids = ids.to(device)
             host_model(ids)
 
-        host_device_guest = next(guest_model.parameters()).device
+        guest_device = next(guest_model.parameters()).device
         for ids in input_ids:
-            ids = ids.to(host_device_guest)
+            ids = ids.to(guest_device)
             guest_model(ids)
     finally:
         h_hook.remove()

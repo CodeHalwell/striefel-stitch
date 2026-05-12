@@ -30,7 +30,7 @@ class TestZeroPadCols:
     def test_no_padding_needed(self):
         t = torch.ones(4, 6)
         out = _zero_pad_cols(t, 6)
-        assert out is t  # same object – no copy
+        assert out is t  # same object, no copy
 
     def test_pads_correctly(self):
         t = torch.ones(3, 4)

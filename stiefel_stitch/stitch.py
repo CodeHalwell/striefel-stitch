@@ -45,7 +45,7 @@ def _pad_to_shape(tensor: Tensor, target_shape: torch.Size) -> Tensor:
     return torch.nn.functional.pad(tensor, pad)
 
 
-def _apply_alignment(weight: Tensor, W: Tensor, alpha: float) -> Tensor:
+def _apply_alignment(weight: Tensor, W: Tensor) -> Tensor:
     """Apply the orthogonal alignment *W* to a guest weight tensor.
 
     For 2-D weight matrices the alignment is applied along the hidden
@@ -115,7 +115,7 @@ def transplant_block(
             padded = _pad_to_shape(guest_param.data, host_param.shape)
 
             # Align padded guest weight with W
-            aligned = _apply_alignment(padded, W, alpha)
+            aligned = _apply_alignment(padded, W)
 
             # Convex combination
             host_param.data.copy_(alpha * host_param.data + (1.0 - alpha) * aligned)
