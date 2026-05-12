@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+.eggs/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Pytest
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Ruff
+.ruff_cache/
+
+# Jupyter
+.ipynb_checkpoints/
+*.ipynb
+
+# Model checkpoints and large result files
+results/W.pt
+results/*.safetensors
+results/stitched_model/
+results/healed_model/
+results/healed_rand/
+
+# Editor
+.vscode/
+.idea/
+*.swp
