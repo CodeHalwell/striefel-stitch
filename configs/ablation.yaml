@@ -1,0 +1,61 @@
+# Ablation configuration – condition C4 (Xavier-initialised block, same healing).
+#
+# Identical to qwen35_ministral3.yaml except that run_heal.py is called with
+# --xavier-init, which replaces block 0 parameters with Xavier-uniform values
+# before attaching LoRA adapters.  This isolates the training-budget
+# contribution from the Procrustes alignment contribution (H3).
+
+# ---- Models ----
+host_model: "Qwen/Qwen3.5-4B"
+guest_model: "mistralai/Ministral-3B-Instruct-2410"
+
+# ---- Architecture parameters ----
+host_hidden_dim: 4096
+guest_hidden_dim: 3072
+host_block_idx: 0
+guest_block_idx: 0
+
+# ---- Calibration corpus ----
+calibration_dataset: "wikitext"
+calibration_subset: "wikitext-2-raw-v1"
+n_calibration_sequences: 1024
+calibration_seq_len: 256
+
+# ---- Procrustes alignment ----
+alpha: 0.5
+n_procrustes_iter: 8
+
+# ---- LoRA healing (same as main config) ----
+lora_rank: 32
+lora_alpha: 64
+lora_dropout: 0.0
+lora_target_modules:
+  - q_proj
+  - k_proj
+  - v_proj
+  - o_proj
+  - gate_proj
+  - up_proj
+  - down_proj
+
+# ---- Training hyperparameters (same budget as C3) ----
+learning_rate: 1.0e-4
+batch_size: 4
+gradient_accumulation_steps: 8
+seq_len: 2048
+max_train_tokens: 200_000_000
+
+# ---- Token-budget sweep (§9, healing saturation risk) ----
+# Uncomment and adjust to sweep healing budgets
+# token_budget_sweep:
+#   - 50_000_000
+#   - 100_000_000
+#   - 200_000_000
+
+# ---- Evaluation ----
+eval_stride: 256
+eval_max_length: 512
+hellaswag_n: 200
+
+# ---- Output ----
+results_dir: "results"

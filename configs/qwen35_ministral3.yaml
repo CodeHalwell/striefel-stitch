@@ -1,0 +1,50 @@
+# Configuration for Qwen3.5-4B (host) ← Ministral-3B (guest) experiment
+# Corresponds to conditions C1–C4 in the paper.
+
+# ---- Models ----
+host_model: "Qwen/Qwen3.5-4B"
+guest_model: "mistralai/Ministral-3B-Instruct-2410"
+
+# ---- Architecture parameters ----
+host_hidden_dim: 4096
+guest_hidden_dim: 3072
+host_block_idx: 0      # Block index to replace in the host model
+guest_block_idx: 0     # Block index to use as donor from the guest model
+
+# ---- Calibration corpus (§2.2) ----
+calibration_dataset: "wikitext"        # HuggingFace dataset name
+calibration_subset: "wikitext-2-raw-v1"
+n_calibration_sequences: 1024
+calibration_seq_len: 256              # T in the paper
+
+# ---- Procrustes alignment (§2.3–2.4) ----
+alpha: 0.5                # Mixing coefficient (host/guest)
+n_procrustes_iter: 8      # K in the paper
+
+# ---- LoRA healing (§2.6) ----
+lora_rank: 32
+lora_alpha: 64
+lora_dropout: 0.0
+lora_target_modules:
+  - q_proj
+  - k_proj
+  - v_proj
+  - o_proj
+  - gate_proj
+  - up_proj
+  - down_proj
+
+# ---- Training hyperparameters ----
+learning_rate: 1.0e-4
+batch_size: 4                          # micro-batch size
+gradient_accumulation_steps: 8        # effective batch = 32 sequences
+seq_len: 2048                          # T_max
+max_train_tokens: 200_000_000          # N_train = 2×10^8
+
+# ---- Evaluation (§7) ----
+eval_stride: 256
+eval_max_length: 512
+hellaswag_n: 200
+
+# ---- Output ----
+results_dir: "results"
